@@ -1,4 +1,4 @@
-package com.xuecheng.content;
+package com.xuecheng.content.controller;
 
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
