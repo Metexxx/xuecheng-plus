@@ -2,7 +2,8 @@ package com.xuecheng.content.mapper;
 
 import com.xuecheng.content.model.po.CourseBase;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
+
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author itcast
  */
+@Mapper
 public interface CourseBaseMapper extends BaseMapper<CourseBase> {
 
 }
