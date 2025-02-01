@@ -10,6 +10,7 @@ import com.xuecheng.content.mapper.CourseCategoryMapper;
 import com.xuecheng.content.mapper.CourseMarketMapper;
 import com.xuecheng.content.model.dto.AddCourseDto;
 import com.xuecheng.content.model.dto.CourseBaseInfoDto;
+import com.xuecheng.content.model.dto.EditCourseDto;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.xuecheng.content.model.po.CourseBase;
 import com.xuecheng.content.model.po.CourseCategory;
@@ -161,8 +162,14 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
             return courseMarketMapper.updateById(courseMarketObj);
         }
     }
-    //根据课程id查询课程基本信息，包括基本信息和营销信息
-    public CourseBaseInfoDto getCourseBaseInfo(long courseId){
+
+    /**
+     * 根据课程id查询课程基本信息，包括基本信息和营销信息
+     * @param courseId
+     * @return
+     */
+    @Override
+    public CourseBaseInfoDto getCourseBaseInfo(Long courseId){
 
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         if(courseBase == null){
@@ -183,4 +190,45 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
         return courseBaseInfoDto;
     }
+    /**
+     * @description 修改课程信息
+     * @param companyId  机构id
+     * @param dto  课程信息
+     * @return com.xuecheng.content.model.dto.CourseBaseInfoDto
+     * @author Mr.M
+     * @date 2022/9/8 21:04
+     */
+    @Transactional
+    @Override
+    public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto dto) {
+
+        //课程id
+        Long courseId = dto.getId();
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if(courseBase == null){
+            XueChengPlusException.cast("课程不存在");
+        }
+
+        //校验本机构只能修改本机构的课程
+        if(!courseBase.getCompanyId().equals(companyId)){
+            XueChengPlusException.cast("本机构只能修改本机构的课程");
+        }
+
+        //封装基本信息的数据
+        BeanUtils.copyProperties(dto, courseBase);
+        courseBase.setChangeDate(LocalDateTime.now());
+
+        //更新课程基本信息
+        int i = courseBaseMapper.updateById(courseBase);
+
+        //封装营销信息的数据
+        CourseMarket courseMarket = new CourseMarket();
+        BeanUtils.copyProperties(dto,courseMarket);
+        saveCourseMarket(courseMarket);
+        //查询课程信息
+        CourseBaseInfoDto courseBaseInfo = this.getCourseBaseInfo(courseId);
+        return courseBaseInfo;
+
+    }
+
 }
