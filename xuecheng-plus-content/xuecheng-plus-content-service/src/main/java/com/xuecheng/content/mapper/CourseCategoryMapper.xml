@@ -18,4 +18,31 @@
         id, name, label, parentid, is_show, orderby, is_leaf
     </sql>
 
+    <select id="selectTreeNodes" resultType="com.xuecheng.content.model.dto.CourseCategoryTreeDto" parameterType="string">
+        with recursive t1 as (
+            select * from  course_category p where  id= #{id}
+            union all
+            select t.* from course_category t inner join t1 on t1.id = t.parentid
+        )
+        select *  from t1 order by t1.id, t1.orderby
+
+    </select>
+
+    <select id="selectChildNodeList" resultType="com.xuecheng.content.model.po.CourseCategory" parameterType="string">
+        SELECT * FROM course_category cc
+        WHERE cc.parentid = #{parentId}
+    </select>
+
+    <select id="selectRootNodes" resultType="com.xuecheng.content.model.po.CourseCategory">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM course_category cc
+        WHERE cc.id NOT REGEXP '-';
+    </select>
+
+    <select id="selectAllNodes" resultType="com.xuecheng.content.model.po.CourseCategory">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM course_category
+    </select>
 </mapper>

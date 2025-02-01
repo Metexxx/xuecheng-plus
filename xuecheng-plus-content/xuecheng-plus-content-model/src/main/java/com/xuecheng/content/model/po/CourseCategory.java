@@ -36,7 +36,7 @@ public class CourseCategory implements Serializable {
     /**
      * 父结点id（第一级的父节点是0，自关联字段id）
      */
-    private String parentId;
+    private String parentid;
 
     /**
      * 是否显示
@@ -46,7 +46,7 @@ public class CourseCategory implements Serializable {
     /**
      * 排序字段
      */
-    private Integer orderBy;
+    private Integer orderby;
 
     /**
      * 是否叶子
