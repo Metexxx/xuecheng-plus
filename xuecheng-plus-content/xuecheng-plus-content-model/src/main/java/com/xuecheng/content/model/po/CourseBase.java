@@ -68,7 +68,7 @@ public class CourseBase implements Serializable {
     /**
      * 教育模式(common普通，record 录播，live直播等）
      */
-    private String teachMode;
+    private String teachmode;
 
     /**
      * 课程介绍
