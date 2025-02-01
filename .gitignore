@@ -8,6 +8,9 @@
 /dataSources.local.xml
 
 HELP.md
+README.md
+Readme.md
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
