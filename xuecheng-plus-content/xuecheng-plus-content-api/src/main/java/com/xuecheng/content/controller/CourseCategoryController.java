@@ -1,10 +1,6 @@
 package com.xuecheng.content.controller;
 
-import com.xuecheng.content.mapper.CourseBaseMapper;
-import com.xuecheng.content.model.dto.AddCourseDto;
-import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.CourseCategoryTreeDto;
-import com.xuecheng.content.service.CourseBaseInfoService;
 import com.xuecheng.content.service.CourseCategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
