@@ -3,22 +3,15 @@ package com.xuecheng.content.service.impl;
 import com.xuecheng.content.mapper.CourseBaseMapper;
 import com.xuecheng.content.mapper.CourseCategoryMapper;
 import com.xuecheng.content.mapper.CourseMarketMapper;
-import com.xuecheng.content.model.dto.AddCourseDto;
-import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.CourseCategoryTreeDto;
-import com.xuecheng.content.model.po.CourseBase;
 import com.xuecheng.content.model.po.CourseCategory;
-import com.xuecheng.content.model.po.CourseMarket;
 import com.xuecheng.content.service.CourseCategoryService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -138,20 +131,22 @@ public class CourseCategoryServiceImpl implements CourseCategoryService {
         //最终返回的list
         List<CourseCategoryTreeDto> categoryTreeDtos = new ArrayList<>();
         //依次遍历每个元素,排除根节点
-        courseCategoryTreeDtos.stream().filter(item->!id.equals(item.getId())).forEach(item->{
-            if(item.getParentid().equals(id)){
-                categoryTreeDtos.add(item);
-            }
-            //找到当前节点的父节点
-            CourseCategoryTreeDto courseCategoryTreeDto = mapTemp.get(item.getParentid());
-            if(courseCategoryTreeDto!=null){
-                if(courseCategoryTreeDto.getChildrenTreeNodes() ==null){
-                    courseCategoryTreeDto.setChildrenTreeNodes(new ArrayList<CourseCategoryTreeDto>());
-                }
-                //下边开始往ChildrenTreeNodes属性中放子节点
-                courseCategoryTreeDto.getChildrenTreeNodes().add(item);
-            }
-        });
+        courseCategoryTreeDtos.stream()
+                .filter(item -> !id.equals(item.getId()))
+                .forEach(item -> {
+                    if(item.getParentid().equals(id)){
+                        categoryTreeDtos.add(item);
+                    }
+                    //找到当前节点的父节点
+                    CourseCategoryTreeDto courseCategoryTreeDto = mapTemp.get(item.getParentid());
+                    if(courseCategoryTreeDto != null){
+                        if(courseCategoryTreeDto.getChildrenTreeNodes() == null){
+                            courseCategoryTreeDto.setChildrenTreeNodes(new ArrayList<CourseCategoryTreeDto>());
+                        }
+                        //下边开始往ChildrenTreeNodes属性中放子节点
+                        courseCategoryTreeDto.getChildrenTreeNodes().add(item);
+                    }
+                });
         return categoryTreeDtos;
     }
 

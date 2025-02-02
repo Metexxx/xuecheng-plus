@@ -1,4 +1,4 @@
-POST {{content_host}}/content/course
+POST http://localhost:63040/content/course
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
   "validDays": 365,
   "mt": "1-1",
   "st": "1-1-1",
-  "name": "测试课程103",
+  "name": "",
   "pic": "",
   "teachmode": "200002",
   "users": "初级人员",
