@@ -66,11 +66,66 @@
             m1.id teachplanMeidaId,
             m1.media_id mediaId
         from teachplan one
-                 INNER JOIN teachplan two on one.id = two.parentid
+                 LEFT JOIN teachplan two on one.id = two.parentid
                  LEFT JOIN teachplan_media m1 on m1.teachplan_id = two.id
         where one.parentid = 0 and one.course_id = #{value}
         order by one.orderby,
                  two.orderby
     </select>
 
+    <!--课程计划树型结构查询-->
+    <select id="selectChildNodes" resultType="com.xuecheng.content.model.dto.TeachplanDto" parameterType="long" >
+        select
+            one.id             one_id,
+            one.pname          one_pname,
+            one.parentid       one_parentid,
+            one.grade          one_grade,
+            one.media_type     one_mediaType,
+            one.start_time     one_stratTime,
+            one.end_time       one_endTime,
+            one.orderby        one_orderby,
+            one.course_id      one_courseId,
+            one.course_pub_id  one_coursePubId,
+            m1.media_fileName mediaFilename,
+            m1.id teachplanMeidaId,
+            m1.media_id mediaId
+        from teachplan one
+                 LEFT JOIN teachplan_media m1 on m1.teachplan_id = one.id
+        where one.parentid = #{id}
+        order by one.orderby
+    </select>
+
+    <!-- 上下移动排序更新 -->
+<!--    <update id="updateBatchById">-->
+<!--        UPDATE teachplan-->
+<!--        SET orderby = CASE id-->
+<!--        <foreach collection="updateList" item="item">-->
+<!--            WHEN #{item.id} THEN #{item.orderby}-->
+<!--        </foreach>-->
+<!--        END-->
+<!--        WHERE id IN-->
+<!--        <foreach collection="updateList" item="item" separator="," open="(" close=")">-->
+<!--            #{item.id}-->
+<!--        </foreach>-->
+<!--    </update>-->
+    <update id="updateBatchById">
+        UPDATE teachplan
+        SET orderby = CASE
+        <foreach collection="updateList" item="item">
+            WHEN id = #{item.id} THEN #{item.orderby}
+        </foreach>
+        ELSE orderby  <!-- 无匹配时保留原值::防止 CASE 条件不匹配时误改数据 -->
+        END
+        WHERE id IN
+        <choose>
+            <when test="updateList != null and !updateList.isEmpty()">
+                <foreach collection="updateList" item="item" separator="," open="(" close=")">
+                    #{item.id}
+                </foreach>
+            </when>
+            <otherwise>
+                (NULL)  <!-- 避免生成 WHERE id IN () 的非法 SQL -->
+            </otherwise>
+        </choose>
+    </update>
 </mapper>
