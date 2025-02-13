@@ -1,8 +1,10 @@
 package com.xuecheng.content.model.po;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -33,11 +35,15 @@ public class CourseTeacher implements Serializable {
     /**
      * 教师标识
      */
+    @NotNull
+    @ApiModelProperty(value = "教师姓名", required = true)
     private String teacherName;
 
     /**
      * 教师职位
      */
+    @NotNull
+    @ApiModelProperty(value = "教师职位", required = true)
     private String position;
 
     /**
