@@ -62,6 +62,7 @@ public class CourseBaseInfoController {
     @DeleteMapping("/course/{courseId}")
     public void deleteCourse(@PathVariable Long courseId) {
         // todo 删除前校验权限
+
         courseBaseInfoService.deleteCourse(courseId);
     }
 }
