@@ -17,22 +17,25 @@ import java.util.List;
 public class CourseCategoryController {
     @Autowired
     private CourseCategoryService courseCategoryService;
-    @ApiOperation(value = "课程分类查询", tags = "课程分类查询")
-    @GetMapping("/course-category/tree-nodesFinal")
-    public List<CourseCategoryTreeDto> queryTreeNodesFinal() {
-        List<CourseCategoryTreeDto> courseCategoryTreeDtoList = courseCategoryService.queryTreeNodesFinal();
-        return courseCategoryTreeDtoList;
-    }
+
+    /**
+     * 教程使用的方法：在SQL里面递归查询
+     * @return
+     */
     @ApiOperation(value = "课程分类查询", tags = "课程分类查询")
     @GetMapping("/course-category/tree-nodes")
     public List<CourseCategoryTreeDto> queryTreeNodes() {
-        List<CourseCategoryTreeDto> courseCategoryTreeDtoList = courseCategoryService.queryTreeNodes("1");
-        return courseCategoryTreeDtoList;
+        return courseCategoryService.queryTreeNodes("1");
+    }
+    @ApiOperation(value = "课程分类查询", tags = "课程分类查询")
+    @GetMapping("/course-category/tree-nodesFinal")
+    public List<CourseCategoryTreeDto> queryTreeNodesFinal() {
+        return  courseCategoryService.queryTreeNodesFinal();
     }
     @ApiOperation(value = "课程分类查询", tags = "课程分类查询")
     @GetMapping("/course-category/tree-nodesFull")
     public List<CourseCategoryTreeDto> queryTreeNodesFull() {
-        List<CourseCategoryTreeDto> courseCategoryTreeDtoList = courseCategoryService.queryTreeNodesFull();
-        return courseCategoryTreeDtoList;
+        return courseCategoryService.queryTreeNodesFull();
     }
+
 }

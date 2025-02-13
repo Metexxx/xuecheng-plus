@@ -37,8 +37,7 @@ public class CourseBaseInfoController {
 //        List<CourseBase> courseBaseList = new ArrayList<>();
 //        courseBaseList.add(courseBase);
 //        return new PageResult<>(courseBaseList, 10, 1, 10);
-        PageResult<CourseBase> courseBasePageResult = courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParams);
-        return courseBasePageResult;
+        return courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParams);
     }
     @ApiOperation("新增课程基础信息")
     @PostMapping("/course")
@@ -59,6 +58,11 @@ public class CourseBaseInfoController {
         Long companyId = 1232141425L;
         return courseBaseInfoService.updateCourseBase(companyId, editCourseDto);
     }
-
+    @ApiOperation("删除课程及关联信息")
+    @DeleteMapping("/course/{courseId}")
+    public void deleteCourse(@PathVariable Long courseId) {
+        // todo 删除前校验权限
+        courseBaseInfoService.deleteCourse(courseId);
+    }
 }
 

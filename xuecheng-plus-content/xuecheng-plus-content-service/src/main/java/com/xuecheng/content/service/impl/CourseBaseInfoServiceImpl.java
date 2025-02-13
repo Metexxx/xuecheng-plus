@@ -5,16 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
-import com.xuecheng.content.mapper.CourseBaseMapper;
-import com.xuecheng.content.mapper.CourseCategoryMapper;
-import com.xuecheng.content.mapper.CourseMarketMapper;
+import com.xuecheng.content.mapper.*;
 import com.xuecheng.content.model.dto.AddCourseDto;
 import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.EditCourseDto;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
-import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.model.po.CourseCategory;
-import com.xuecheng.content.model.po.CourseMarket;
+import com.xuecheng.content.model.po.*;
 import com.xuecheng.content.service.CourseBaseInfoService;
 import com.xuecheng.content.service.CourseCategoryService;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +35,10 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     private CourseBaseMapper courseBaseMapper;
     @Autowired
     private CourseMarketMapper courseMarketMapper;
+    @Autowired
+    private TeachplanMapper teachplanMapper;
+    @Autowired
+    private CourseTeacherMapper courseTeacherMapper;
     @Autowired
     private CourseCategoryMapper courseCategoryMapper;
 
@@ -70,34 +70,34 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     @Override
     public CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto dto) {
 
-        //合法性校验
-        if (StringUtils.isBlank(dto.getName())) {
-            throw new XueChengPlusException("课程名称为空");
-        }
-
-        if (StringUtils.isBlank(dto.getMt())) {
-            throw new XueChengPlusException("课程分类为空");
-        }
-
-        if (StringUtils.isBlank(dto.getSt())) {
-            throw new XueChengPlusException("课程分类为空");
-        }
-
-        if (StringUtils.isBlank(dto.getGrade())) {
-            throw new XueChengPlusException("课程等级为空");
-        }
-
-        if (StringUtils.isBlank(dto.getTeachmode())) {
-            throw new XueChengPlusException("教育模式为空");
-        }
-
-        if (StringUtils.isBlank(dto.getUsers())) {
-            throw new XueChengPlusException("适应人群为空");
-        }
-
-        if (StringUtils.isBlank(dto.getCharge())) {
-            throw new XueChengPlusException("收费规则为空");
-        }
+        //合法性校验 - 使用JSR-303检验替代
+//        if (StringUtils.isBlank(dto.getName())) {
+//            throw new XueChengPlusException("课程名称为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getMt())) {
+//            throw new XueChengPlusException("课程分类为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getSt())) {
+//            throw new XueChengPlusException("课程分类为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getGrade())) {
+//            throw new XueChengPlusException("课程等级为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getTeachmode())) {
+//            throw new XueChengPlusException("教育模式为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getUsers())) {
+//            throw new XueChengPlusException("适应人群为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getCharge())) {
+//            throw new XueChengPlusException("收费规则为空");
+//        }
 
 
         //新增对象
@@ -127,7 +127,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         BeanUtils.copyProperties(dto, courseMarketNew);
         courseMarketNew.setId(courseId);
         if(dto.getCharge().equals("201001")){
-            if(courseMarketNew.getPrice() ==null || courseMarketNew.getPrice().floatValue()<=0){
+            if(courseMarketNew.getPrice() == null || courseMarketNew.getPrice().floatValue() <= 0){
                 throw new XueChengPlusException("课程的价格不能为空并且必须大于0");
             }
         }
@@ -231,4 +231,20 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
     }
 
+    @Override
+    @Transactional
+    public void deleteCourse(Long courseId) {
+        // todo 权限判断：只允许删除本机构的课程
+
+        // 删除教师信息
+        courseTeacherMapper.delete(new LambdaQueryWrapper<CourseTeacher>()
+                .eq(CourseTeacher::getCourseId, courseId));
+        // 删除课程计划
+        teachplanMapper.delete(new LambdaQueryWrapper<Teachplan>()
+                .eq(Teachplan::getCourseId, courseId));
+        // 删除营销信息
+        courseMarketMapper.deleteById(courseId);
+        // 删除课程基本信息
+        courseBaseMapper.deleteById(courseId);
+    }
 }
