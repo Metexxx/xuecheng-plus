@@ -26,11 +26,12 @@ public interface CourseBaseInfoService {
      */
     PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto);
 
-
     CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto);
 
     CourseBaseInfoDto getCourseBaseInfo(Long courseId);
 
     CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto dto);
+
+    void deleteCourse(Long courseId);
 }
 
