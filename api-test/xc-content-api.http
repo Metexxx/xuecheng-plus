@@ -1,4 +1,4 @@
-POST http://localhost:63040/content/course
+POST {{content_host}}/content/course
 Content-Type: application/json
 
 {
