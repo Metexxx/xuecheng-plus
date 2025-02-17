@@ -25,7 +25,7 @@ public class MediaFilesController {
      @Autowired
      MediaFileService mediaFileService;
      @ApiOperation("媒资列表查询接口")
-     @PostMapping("/files")
+     @PostMapping("/media/files")
      public PageResult<MediaFiles> list(PageParams pageParams, @RequestBody QueryMediaParamsDto queryMediaParamsDto){
          Long companyId = 1232141425L;
          return mediaFileService.queryMediaFiels(companyId,pageParams,queryMediaParamsDto);
