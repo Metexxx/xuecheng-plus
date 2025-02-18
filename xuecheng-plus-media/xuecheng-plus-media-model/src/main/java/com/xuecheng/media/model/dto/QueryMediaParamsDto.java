@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.ToString;
 
 /**
- * @author Mr.M
+ * @author Swith4Sumin
  * @version 1.0
  * @description 媒资文件查询请求模型类
- * @date 2022/9/10 8:53
+ * @date 2025/2/10 8:53
  */
 @Data
 @ToString

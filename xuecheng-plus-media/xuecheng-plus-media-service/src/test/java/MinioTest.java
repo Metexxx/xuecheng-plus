@@ -17,46 +17,85 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.fail;
 
 public class MinioTest {
+
+    /**
+     * 初始化并配置Minio客户端静态实例
+     *
+     * 使用建造者模式创建MinioClient实例，配置以下参数：
+     * @implNote credentials - 设置MinIO服务认证凭证
+     *           (参数1) accessKey: 用户名，默认开发环境凭证为"minioadmin"
+     *           (参数2) secretKey: 密码，默认开发环境凭证为"minioadmin"
+     * @implNote endpoint - 设置MinIO服务端点地址
+     *           格式为协议://IP地址:端口，示例中使用的是本地开发环境地址9000端口
+     *
+     * 最终通过build()方法完成客户端实例的构建，该实例将用于后续对象存储操作
+     */
     static MinioClient minioClient = MinioClient.builder()
             .credentials("minioadmin", "minioadmin")
             .endpoint("http://192.168.45.129:9000")
             .build();
 
-    // minio上传文件测试
+    /**
+     * minio测试文件上传功能
+     *
+     * 测试场景：
+     * 1. 根据文件扩展名获取对应的mime类型
+     * 2. 构建MinIO上传参数并执行文件上传
+     * 3. 处理上传成功/失败的结果输出
+     */
     @Test
     public void upload() {
-        //根据扩展名取出mimeType
-        ContentInfo extensionMatch = ContentInfoUtil.findExtensionMatch(".mp4");
-        //通用mimeType，字节流
+        /* 根据.mp4扩展名获取对应的(mimeType)MIME类型，若未匹配则使用默认二进制流类型 */
+        ContentInfo extensionMatch = ContentInfoUtil.findExtensionMatch(".png");
+        // 通用mimeType:字节流; 先默认使用通用二进制流类型
         String mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-        if(extensionMatch!=null){
+        if (extensionMatch != null) {
             mimeType = extensionMatch.getMimeType();
         }
 
         try {
+            /* 构建MinIO上传参数：存储桶名称/对象名称/本地文件路径/MIME类型 */
             UploadObjectArgs testBucket = UploadObjectArgs.builder()
                     .bucket("testbucket")
-                    .object("test001.mp4")
-                    .filename("D:\\develop_tools\\0.mp4")
+                    .object("1.png")
+                    .filename("D:\\develop_tools\\upload\\1.png")
                     .contentType(mimeType)
                     .build();
+
+            /* 执行MinIO客户端上传操作并输出结果 */
             minioClient.uploadObject(testBucket);
             System.out.println("上传成功");
         } catch (Exception e) {
+            /* 异常处理：打印堆栈轨迹并输出上传失败信息 */
             e.printStackTrace();
             System.out.println("上传失败");
+            fail("对象上传失败: " + e.getMessage());
         }
     }
+
+
+
+    /**
+     * 删除MinIO存储桶中的指定对象
+     *
+     * 本函数用于从"testbucket"存储桶中永久删除名为"test001.mp4"的对象文件。
+     * 操作结果将通过控制台输出提示信息，成功时打印"删除成功"，失败时打印异常堆栈信息及"删除失败"。
+     *
+     * @throws Exception 当连接MinIO服务异常或对象删除失败时抛出，包含具体错误信息
+     */
     @Test
     public void delete() {
         try {
+            // 构建删除请求并执行MinIO对象删除操作：存储桶名称/对象名称
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket("testbucket")
                             .object("test001.mp4")
                             .build());
+
             System.out.println("删除成功");
         } catch (Exception e) {
+            // 异常处理：打印异常堆栈并输出失败提示
             e.printStackTrace();
             System.out.println("删除失败");
         }
