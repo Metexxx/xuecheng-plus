@@ -46,6 +46,8 @@ import java.util.List;
 @Service
 public class MediaFileServiceImpl implements MediaFileService {
     @Autowired
+    MediaFileService currentProxy;
+    @Autowired
     MediaFilesMapper mediaFilesMapper;
     @Autowired
     MinioClient minioClient;
@@ -135,6 +137,7 @@ public class MediaFileServiceImpl implements MediaFileService {
      * @param objectName 对象名称
      * @return mediaFiles文件信息
      */
+    @Override
     @Transactional
     public MediaFiles addMediaFilesToDb(Long companyId, String fileMd5, UploadFileParamsDto uploadFileParamsDto, String bucket, String objectName) {
         MediaFiles mediaFiles = mediaFilesMapper.selectById(fileMd5);
@@ -162,7 +165,6 @@ public class MediaFileServiceImpl implements MediaFileService {
         return mediaFiles;
     }
     @Override
-    @Transactional
     public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath) {
         File file = new File(localFilePath);
         if (!file.exists()) {
@@ -188,7 +190,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         // 设置文件大小
         uploadFileParamsDto.setFileSize(file.length());
         // 将文件信息存储到数据库
-        MediaFiles mediaFiles = addMediaFilesToDb(companyId, fileMd5, uploadFileParamsDto, bucket_Files, objectName);
+        MediaFiles mediaFiles = currentProxy.addMediaFilesToDb(companyId, fileMd5, uploadFileParamsDto, bucket_Files, objectName);
         // 准备返回数据
         UploadFileResultDto uploadFileResultDto = new UploadFileResultDto();
         BeanUtils.copyProperties(mediaFiles, uploadFileResultDto);
