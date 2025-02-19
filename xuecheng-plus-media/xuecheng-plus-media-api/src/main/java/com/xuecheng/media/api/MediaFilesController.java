@@ -38,7 +38,7 @@ public class MediaFilesController {
      }
      @ApiOperation("上传文件")
      @RequestMapping(value = "/upload/coursefile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-     public UploadFileResultDto upload(@RequestPart("fileData") MultipartFile fileData,
+     public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile filedata,
                                        @RequestParam(value = "folder", required = false) String folder,
                                        @RequestParam(value = "objectName", required = false) String objectName) throws IOException {
          Long companyId = 1232141425L;
@@ -46,13 +46,13 @@ public class MediaFilesController {
          // 图片
          uploadFileParamsDto.setFileType("001001");
          // 文件名称
-         uploadFileParamsDto.setFilename(fileData.getOriginalFilename());
+         uploadFileParamsDto.setFilename(filedata.getOriginalFilename());
          // 文件大小
-         uploadFileParamsDto.setFileSize(fileData.getSize());
+         uploadFileParamsDto.setFileSize(filedata.getSize());
          // 创建临时文件
          File tempFile = File.createTempFile("minio", ".temp");
          // 将上传的文件拷贝到临时文件
-         fileData.transferTo(tempFile);
+         filedata.transferTo(tempFile);
          // 文件路径
          String absolutePath = tempFile.getAbsolutePath();
          // 上传文件并返回结果
