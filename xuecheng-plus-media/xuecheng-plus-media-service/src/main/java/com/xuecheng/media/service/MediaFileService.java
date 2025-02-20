@@ -62,7 +62,7 @@ public interface MediaFileService {
       * @author Swith4Sumin
       * @date 2025/2/20 15:38
       */
-     RestResponse uploadChunk(String fileMd5, int chunk, byte[] bytes);
+     RestResponse<?> uploadChunk(String fileMd5, int chunk, byte[] bytes);
 
      /**
       * 合并分块
@@ -71,7 +71,7 @@ public interface MediaFileService {
       * @param fileMd5             文件MD5
       * @param chunkTotal          分块数量
       * @param uploadFileParamsDto 文件信息
-      * @return
+      * @return com.xuecheng.base.model.RestResponse
       */
-     RestResponse mergeChunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto) throws IOException;
+     RestResponse<?> mergeChunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto) throws IOException;
 }
