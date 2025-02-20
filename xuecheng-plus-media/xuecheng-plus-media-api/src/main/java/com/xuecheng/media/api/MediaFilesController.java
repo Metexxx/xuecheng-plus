@@ -1,7 +1,10 @@
 package com.xuecheng.media.api;
 
+import com.alibaba.nacos.common.model.RestResult;
+import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
@@ -40,22 +43,39 @@ public class MediaFilesController {
      @RequestMapping(value = "/upload/coursefile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
      public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile filedata,
                                        @RequestParam(value = "folder", required = false) String folder,
-                                       @RequestParam(value = "objectName", required = false) String objectName) throws IOException {
-         Long companyId = 1232141425L;
+                                       @RequestParam(value = "objectName", required = false) String objectName) {
          UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
-         // 图片
-         uploadFileParamsDto.setFileType("001001");
-         // 文件名称
+         String contentType = filedata.getContentType();
+         assert contentType != null;
+         if (contentType.contains("image")) {
+             uploadFileParamsDto.setFileType("001001"); // 图片
+         } else {
+             uploadFileParamsDto.setFileType("001003"); // 视频
+         }
+         // 设置文件名、大小、备注
+         uploadFileParamsDto.setRemark("");
          uploadFileParamsDto.setFilename(filedata.getOriginalFilename());
-         // 文件大小
          uploadFileParamsDto.setFileSize(filedata.getSize());
-         // 创建临时文件
-         File tempFile = File.createTempFile("minio", ".temp");
-         // 将上传的文件拷贝到临时文件
-         filedata.transferTo(tempFile);
-         // 文件路径
-         String absolutePath = tempFile.getAbsolutePath();
+
+         Long companyId = 1232141425L;
          // 上传文件并返回结果
-         return mediaFileService.uploadFile(companyId, uploadFileParamsDto, absolutePath);
+         try {
+             // 创建临时文件，并将上传的文件拷贝到临时文件
+             File tempFile = File.createTempFile("minio", ".temp");
+             filedata.transferTo(tempFile);
+             // 文件路径
+             String absolutePath = tempFile.getAbsolutePath();
+             return mediaFileService.uploadFile(companyId, uploadFileParamsDto, absolutePath);
+         } catch (IOException e) {
+             XueChengPlusException.cast("上传文件过程出错:" + e.getMessage());
+         }
+         return new UploadFileResultDto();
      }
+
+//     @ApiOperation("预览文件")
+//     @GetMapping("/preview/{mediaId}")
+//     public RestResult<String> preview(@PathVariable String mediaId){
+//         mediaFileService.getFileId(mediaId);
+//         return RestResponse.success()
+//     }
 }
