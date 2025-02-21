@@ -11,6 +11,7 @@ import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
 import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.media.mapper.MediaFilesMapper;
+import com.xuecheng.media.mapper.MediaProcessMapper;
 import com.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
@@ -50,6 +51,9 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     @Autowired
     MediaFilesMapper mediaFilesMapper;
+
+    @Autowired
+    MediaProcessMapper mediaProcessMapper;
 
     @Autowired
     MinioClient minioClient;
@@ -225,15 +229,15 @@ public class MediaFileServiceImpl implements MediaFileService {
             log.debug("保存文件信息到数据库成功, {}", mediaFiles.toString());
         }
         // 如果是avi视频，则额外添加至视频待处理表
-//        if ("video/x-msvideo".equals(contentType)) {
-//            MediaProcess mediaProcess = new MediaProcess();
-//            BeanUtils.copyProperties(mediaFiles, mediaProcess);
-//            mediaProcess.setStatus("1"); // 未处理
-//            int processInsert = mediaProcessMapper.insert(mediaProcess);
-//            if (processInsert <= 0) {
-//                XueChengPlusException.cast("保存avi视频到待处理表失败");
-//            }
-//        }
+        if ("video/x-msvideo".equals(contentType)) {
+            MediaProcess mediaProcess = new MediaProcess();
+            BeanUtils.copyProperties(mediaFiles, mediaProcess);
+            mediaProcess.setStatus("1"); // 未处理
+            int processInsert = mediaProcessMapper.insert(mediaProcess);
+            if (processInsert <= 0) {
+                XueChengPlusException.cast("保存avi视频到待处理表失败");
+            }
+        }
         return mediaFiles;
     }
     /**
@@ -337,7 +341,6 @@ public class MediaFileServiceImpl implements MediaFileService {
         return RestResponse.success(false);
     }
 
-
     /**
      * 上传分块
      *
@@ -347,7 +350,7 @@ public class MediaFileServiceImpl implements MediaFileService {
      * @return
      */
     @Override
-    public RestResponse uploadChunk(String fileMd5, int chunk, byte[] bytes) {
+    public RestResponse<?> uploadChunk(String fileMd5, int chunk, byte[] bytes) {
         // 分块文件路径
         String chunkFilePath = getChunkFileFolderPath(fileMd5) + chunk;
         try {
@@ -380,7 +383,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         }
     }
     @Override
-    public RestResponse mergeChunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto) {
+    public RestResponse<?> mergeChunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto) {
         // 下载分块文件
         File[] chunkFiles = checkChunkStatus(fileMd5, chunkTotal);
         // 获取源文件名
@@ -479,11 +482,10 @@ public class MediaFileServiceImpl implements MediaFileService {
     }
     /**
      * 从Minio中下载文件
-     *
      * @param file       目标文件
      * @param bucket     桶
      * @param objectName 桶内文件路径
-     * @return
+     * @return file
      */
     public File downloadFileFromMinio(File file, String bucket, String objectName) {
         try (FileOutputStream fileOutputStream = new FileOutputStream(file);

@@ -2,6 +2,7 @@ package com.xuecheng.content.model.po;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -58,6 +59,4 @@ public class TeachplanMedia implements Serializable {
      * 修改人
      */
     private String changePeople;
-
-
 }
