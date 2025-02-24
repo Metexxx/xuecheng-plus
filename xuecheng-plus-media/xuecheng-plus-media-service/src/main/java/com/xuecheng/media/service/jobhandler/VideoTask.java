@@ -2,7 +2,6 @@ package com.xuecheng.media.service.jobhandler;
 
 import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.base.utils.Mp4VideoUtil;
-import com.xuecheng.media.mapper.MediaProcessMapper;
 import com.xuecheng.media.model.po.MediaProcess;
 import com.xuecheng.media.service.MediaFileProcessService;
 import com.xuecheng.media.service.MediaFileService;
@@ -141,8 +140,9 @@ public class VideoTask {
     }
 
     private String getFilePath(String fileMd5,String fileExt){
-        return fileMd5.substring(0, 1) + "/" + fileMd5.substring(1, 2) + "/" + fileMd5 + "/" + fileMd5 + fileExt;
+        return fileMd5.charAt(0) + "/" + fileMd5.charAt(1) + "/" + fileMd5 + "/" + fileMd5 + fileExt;
     }
+
     @XxlJob("videoJobHandler")
     public void videoJobHandler() throws InterruptedException {
         // 分片序号

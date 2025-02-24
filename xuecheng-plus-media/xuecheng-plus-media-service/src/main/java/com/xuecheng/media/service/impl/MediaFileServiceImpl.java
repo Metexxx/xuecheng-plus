@@ -89,19 +89,21 @@ public class MediaFileServiceImpl implements MediaFileService {
         }
     }
     /**
-     * 根据MD5和文件扩展名，生成文件路径，例 /2/f/2f6451sdg/2f6451sdg.mp4
-     *
+     * 根据MD5和文件扩展名，生成文件路径.
+     * 例 fileMd5 =2f6451sdg;  fileMd5.charAt(0) = 2, fileMd5.charAt(1) = f
+     * fileMd5 + extension = 2f6451sdg.mp4
+     * 拼接路径: /2/f/2f6451sdg/2f6451sdg.mp4
      * @param fileMd5   文件MD5
      * @param extension 文件扩展名
-     * @return
+     * @return string 文件路径
      */
     public String getFilePathByMd5(String fileMd5, String extension) {
-        return fileMd5.substring(0, 1) + "/" + fileMd5.substring(1, 2) + "/" + fileMd5 + "/" + fileMd5 + extension;
+        return fileMd5.charAt(0) + "/" + fileMd5.charAt(1) + "/" + fileMd5 + "/" + fileMd5 + extension;
     }
 
-    //得到分块文件的目录
+    // 得到分块文件的目录：在文件的同级目录的chunk目录下，分块名为编号chunkIndex
     private String getChunkFileFolderPath(String fileMd5) {
-        return fileMd5.substring(0, 1) + "/" + fileMd5.substring(1, 2) + "/" + fileMd5 + "/" + "chunk" + "/";
+        return fileMd5.charAt(0) + "/" + fileMd5.charAt(1) + "/" + fileMd5 + "/" + "chunk" + "/";
     }
 
     /**
@@ -125,7 +127,6 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     /**
      * 根据objectName获取对应的MimeType
-     *
      * @param objectName 对象名称
      * @return contentType 内容类型
      */
@@ -173,7 +174,6 @@ public class MediaFileServiceImpl implements MediaFileService {
     }
     /**
      * 将本地文件上传到minio-重载方法
-     *
      * @param filePath   本地文件路径
      * @param bucket     桶
      * @param objectName 对象名称
@@ -290,6 +290,11 @@ public class MediaFileServiceImpl implements MediaFileService {
         return new PageResult<>(list, total, pageParams.getPageNo(), pageParams.getPageSize());
     }
 
+    /**
+     * 当数据库和minio中文件都存在，则返回true
+     * @param fileMd5 文件的md5
+     * @return 封装的boolean
+     */
     @Override
     public RestResponse<Boolean> checkFile(String fileMd5) {
         //查询文件信息
@@ -313,9 +318,14 @@ public class MediaFileServiceImpl implements MediaFileService {
         return RestResponse.success(true);
     }
 
+    /**
+     * 检查分块文件是否存在-避免重复上传文件块: 分块文件只临时存储在minio中
+     * @param fileMd5    文件MD5
+     * @param chunkIndex 分块序号
+     * @return RestResponse<Boolean>
+     */
     @Override
     public RestResponse<Boolean> checkChunk(String fileMd5, int chunkIndex) {
-
         //得到分块文件目录
         String chunkFileFolderPath = getChunkFileFolderPath(fileMd5);
         //得到分块文件的路径
@@ -343,11 +353,10 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     /**
      * 上传分块
-     *
      * @param fileMd5 文件MD5
      * @param chunk   分块序号
-     * @param bytes   文件字节
-     * @return
+     * @param bytes   文件字节数组
+     * @return RestResponse
      */
     @Override
     public RestResponse<?> uploadChunk(String fileMd5, int chunk, byte[] bytes) {
@@ -363,11 +372,12 @@ public class MediaFileServiceImpl implements MediaFileService {
     }
 
     /**
+     * 本类方法(非接口实现)：将文件字节数组上传到minio中
      * @param bytes      文件字节数组-用于传输分块
      * @param bucket     桶
-     * @param objectName 对象名称 25/02/21/lalala.mkv
+     * @param objectName 对象名称objectName.extension
      */
-    public void addMediaFilesToMinIO(byte[] bytes, String bucket, String objectName) {
+    private void addMediaFilesToMinIO(byte[] bytes, String bucket, String objectName) {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         String contentType = getContentType(objectName);
         try {
@@ -382,6 +392,7 @@ public class MediaFileServiceImpl implements MediaFileService {
             throw new XueChengPlusException("上传到文件系统出错");
         }
     }
+
     @Override
     public RestResponse<?> mergeChunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto) {
         // 下载分块文件
@@ -452,9 +463,9 @@ public class MediaFileServiceImpl implements MediaFileService {
             }
         }
     }
+
     /**
      * 下载分块文件
-     *
      * @param fileMd5    文件的MD5
      * @param chunkTotal 总块数
      * @return 分块文件数组
@@ -480,6 +491,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         }
         return files;
     }
+
     /**
      * 从Minio中下载文件
      * @param file       目标文件
