@@ -5,6 +5,7 @@
     <title>Hello World!</title>
 </head>
 <body>
-Hello ${broski}!
+<#--Hello ${broski}!-->
+Hello ${name}!
 </body>
 </html>

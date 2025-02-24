@@ -30,9 +30,13 @@
             <result column="two_coursePubId"   property="coursePubId" />
             <association property="teachplanMedia" javaType="com.xuecheng.content.model.po.TeachplanMedia">
                 <result column="teachplanMediaId"   property="id" />
-                <result column="media_fileName"   property="mediaFilename" />
-                <result column="media_id"   property="mediaId" />
-                <result column="teachplan_id"   property="teachplanId" />
+
+                <result column="mediaFilename" property="mediaFilename" />  <!-- 使用别名后的列名 -->
+                <result column="mediaId" property="mediaId" />              <!-- 使用别名后的列名 -->
+                <result column="teachplanId" property="teachplanId" />     <!-- 确保SQL中选择了该字段 -->
+                <!-- 添加缺失的courseId映射 -->
+                <result column="mediaCourseId" property="courseId" />
+
                 <result column="courseId"   property="courseId" />
                 <result column="coursePubId"   property="coursePubId" />
             </association>
@@ -63,8 +67,9 @@
             two.course_id      two_courseId,
             two.course_pub_id  two_coursePubId,
             m1.media_fileName mediaFilename,
-            m1.id teachplanMeidaId,
-            m1.media_id mediaId
+            m1.id teachplanMediaId,
+            m1.media_id mediaId,
+            m1.teachplan_id teachplanId
         from teachplan one
                  LEFT JOIN teachplan two on one.id = two.parentid
                  LEFT JOIN teachplan_media m1 on m1.teachplan_id = two.id

@@ -42,8 +42,8 @@ public class BigFilesController {
     @ApiOperation(value = "上传分块文件")
     @PostMapping("/upload/uploadchunk")
     public RestResponse<?> uploadChunk(@RequestParam("file") MultipartFile file,
-                                    @RequestParam("fileMd5") String fileMd5,
-                                    @RequestParam("chunk") int chunk) throws Exception {
+                                       @RequestParam("fileMd5") String fileMd5,
+                                       @RequestParam("chunk") int chunk) throws Exception {
         //创建临时文件
 //        File tempFile = File.createTempFile("minio", "temp");
         //上传的文件拷贝到临时文件
@@ -54,7 +54,9 @@ public class BigFilesController {
     }
     @ApiOperation(value = "合并分块文件")
     @PostMapping("/upload/mergechunks")
-    public RestResponse<?> mergeChunks(@RequestParam("fileMd5") String fileMd5, @RequestParam("fileName") String fileName, @RequestParam("chunkTotal") int chunkTotal) throws IOException {
+    public RestResponse<?> mergeChunks(@RequestParam("fileMd5") String fileMd5,
+                                       @RequestParam("fileName") String fileName,
+                                       @RequestParam("chunkTotal") int chunkTotal) throws IOException {
         Long companyId = 1232141425L;
         UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
         uploadFileParamsDto.setFileType("001002");
