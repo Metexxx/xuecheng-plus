@@ -122,4 +122,7 @@ public interface MediaFileService {
       * @date 2025/2/20 15:38
       */
      String getFilePathByMd5(String fileMd5, String extension);
+
+    MediaFiles getFileById(String mediaId);
+
 }
