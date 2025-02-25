@@ -6,11 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 /**
- * <p>
- * 课程发布 Mapper 接口
- * </p>
- *
- * @author itcast
+ * 课程预发布 Mapper 接口
+ * @author Swith4Sumin
  */
 @Mapper
 public interface CoursePublishPreMapper extends BaseMapper<CoursePublishPre> {
