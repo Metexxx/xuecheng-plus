@@ -72,10 +72,10 @@ public class MediaFilesController {
          return new UploadFileResultDto();
      }
 
-//     @ApiOperation("预览文件")
-//     @GetMapping("/preview/{mediaId}")
-//     public RestResult<String> preview(@PathVariable String mediaId){
-//         mediaFileService.getFileId(mediaId);
-//         return RestResponse.success()
-//     }
+    @ApiOperation(value = "预览文件")
+    @GetMapping("/preview/{mediaId}")
+    public RestResponse<String> getPlayUrlByMediaId(@PathVariable String mediaId) {
+        MediaFiles mediaFile = mediaFileService.getFileById(mediaId);
+        return RestResponse.success(mediaFile.getUrl());
+    }
 }

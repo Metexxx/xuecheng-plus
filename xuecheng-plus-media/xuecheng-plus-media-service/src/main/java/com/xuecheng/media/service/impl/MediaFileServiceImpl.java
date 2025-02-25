@@ -513,4 +513,13 @@ public class MediaFileServiceImpl implements MediaFileService {
         }
         return null;
     }
+
+    @Override
+    public MediaFiles getFileById(String id) {
+        MediaFiles mediaFiles = mediaFilesMapper.selectById(id);
+        if (mediaFiles == null || StringUtils.isEmpty(mediaFiles.getUrl())) {
+            XueChengPlusException.cast("视频还没有转码处理");
+        }
+        return mediaFiles;
+    }
 }
