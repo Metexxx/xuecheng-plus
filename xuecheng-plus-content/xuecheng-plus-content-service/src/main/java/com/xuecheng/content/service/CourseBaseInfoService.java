@@ -21,8 +21,6 @@ public interface CourseBaseInfoService {
      * @param pageParams 分页参数
      * @param queryCourseParamsDto 条件条件
      * @return com.xuecheng.base.model.PageResult<com.xuecheng.content.model.po.CourseBase>
-     * @author Mr.M
-     * @date 2022/9/6 21:44
      */
     PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto);
 

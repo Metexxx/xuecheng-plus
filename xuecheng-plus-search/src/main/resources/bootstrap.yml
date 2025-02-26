@@ -1,6 +1,6 @@
 spring:
   application:
-    name: content-service
+    name: search
   cloud:
     nacos:
       server-addr: 192.168.45.129:8848
@@ -19,25 +19,6 @@ spring:
           - data-id: logging-${spring.profiles.active}.yaml
             group: xuecheng-plus-common
             refresh: true
-          - data-id: feign-${spring.profiles.active}.yaml
-            group: xuecheng-plus-common
-            refresh: true
 
   profiles:
     active: dev
-
-#server:
-#  servlet:
-#    context-path: /content
-#  port: 63040
-
-#logging:
-#  config: classpath:log4j2-dev.xml
-
-#  application:
-#    name: content-service
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://192.168.45.129:3306/xuecheng_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-#    username: root
-#    password: 123

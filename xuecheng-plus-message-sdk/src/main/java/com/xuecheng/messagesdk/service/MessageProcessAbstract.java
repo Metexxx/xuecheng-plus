@@ -61,7 +61,7 @@ public abstract class MessageProcessAbstract {
                             log.debug("任务执行成功:{})", message);
                             //更新任务状态,删除消息表记录,添加到历史表
                             int completed = mqMessageService.completed(message.getId());
-                            if (completed>0){
+                            if (completed > 0){
                                 log.debug("任务执行成功:{}", message);
                             }else{
                                 log.debug("任务执行失败:{}", message);
@@ -69,7 +69,7 @@ public abstract class MessageProcessAbstract {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        log.debug("任务出现异常:{},任务:{}", e.getMessage(),message);
+                        log.debug("任务出现异常:{},任务:{}", e.getMessage(), message);
                     }finally {
                         //计数
                         countDownLatch.countDown();
