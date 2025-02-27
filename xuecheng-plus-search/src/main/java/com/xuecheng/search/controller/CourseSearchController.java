@@ -1,7 +1,6 @@
 package com.xuecheng.search.controller;
 
 import com.xuecheng.base.model.PageParams;
-import com.xuecheng.base.model.PageResult;
 import com.xuecheng.search.dto.SearchCourseParamDto;
 import com.xuecheng.search.dto.SearchPageResultDto;
 import com.xuecheng.search.po.CourseIndex;
@@ -12,25 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @description 课程搜索接口
- * @author Mr.M
- * @date 2022/9/24 22:31
+ * @author Swith4Sumin
  * @version 1.0
+ * @description 课程搜索接口
+ * @date 2025/2/26 10:32
  */
-@Api(value = "课程搜索接口",tags = "课程搜索接口")
- @RestController
- @RequestMapping("/course")
+@Api(value = "课程搜索接口", tags = "课程搜索接口")
+@RestController
+@RequestMapping("/course")
 public class CourseSearchController {
 
- @Autowired
- CourseSearchService courseSearchService;
+    @Autowired
+    CourseSearchService courseSearchService;
 
-
- @ApiOperation("课程搜索列表")
-  @GetMapping("/list")
- public SearchPageResultDto<CourseIndex> list(PageParams pageParams, SearchCourseParamDto searchCourseParamDto){
-
-    return courseSearchService.queryCoursePubIndex(pageParams,searchCourseParamDto);
-   
-  }
+    @ApiOperation("课程搜索列表")
+    @GetMapping("/list")
+    public SearchPageResultDto<CourseIndex> list(PageParams pageParams, SearchCourseParamDto searchCourseParamDto) {
+        return courseSearchService.queryCoursePubIndex(pageParams, searchCourseParamDto);
+    }
 }

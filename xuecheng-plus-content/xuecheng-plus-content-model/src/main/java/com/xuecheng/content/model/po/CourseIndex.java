@@ -1,4 +1,4 @@
-package com.xuecheng.search.po;
+package com.xuecheng.content.model.po;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+
 @Slf4j
 @Component
 public class CoursePublishTask extends MessageProcessAbstract {
@@ -26,9 +27,9 @@ public class CoursePublishTask extends MessageProcessAbstract {
         // 分片参数
         int shardIndex = XxlJobHelper.getShardIndex();
         int shardTotal = XxlJobHelper.getShardTotal();
-        log.debug("shardIndex="+shardIndex+",shardTotal="+shardTotal);
+        log.debug("shardIndex=" + shardIndex + ",shardTotal=" + shardTotal);
         //参数:分片序号、分片总数、消息类型、一次最多取到的任务数量、一次任务调度执行的超时时间
-        process(shardIndex, shardTotal,"course_publish",30,60);
+        process(shardIndex, shardTotal, "course_publish", 30, 60);
     }
 
     //课程发布任务处理
@@ -36,7 +37,7 @@ public class CoursePublishTask extends MessageProcessAbstract {
     public boolean execute(MqMessage mqMessage) {
         //  //获取消息相关的业务信息 修正后代码（提取纯数字部分）
         String businessKey1 = mqMessage.getBusinessKey1();
-        if(businessKey1 != null && businessKey1.startsWith("course_")){
+        if (businessKey1 != null && businessKey1.startsWith("course_")) {
             String numberPart = businessKey1.substring(7); // 截取"course_"之后的部分
             int courseId = Integer.parseInt(numberPart);
             //课程静态化
@@ -45,7 +46,7 @@ public class CoursePublishTask extends MessageProcessAbstract {
             saveCourseIndex(mqMessage, courseId);
             //课程缓存
             saveCourseCache(mqMessage, courseId);
-        }else{
+        } else {
             // 处理非法格式
             XueChengPlusException.cast("非法的课程ID格式：" + businessKey1);
         }
@@ -60,7 +61,7 @@ public class CoursePublishTask extends MessageProcessAbstract {
     }
 
     //生成课程静态化页面并上传至文件系统
-    public void generateCourseHtml(MqMessage mqMessage,long courseId){
+    public void generateCourseHtml(MqMessage mqMessage, long courseId) {
         log.debug("开始课程静态化，课程id：{}", courseId);
         // 1. 幂等性判断
         // 1.1 获取消息id
@@ -85,8 +86,8 @@ public class CoursePublishTask extends MessageProcessAbstract {
     }
 
     //将课程信息缓存至redis
-    public void saveCourseCache(MqMessage mqMessage, long courseId){
-        log.debug("将课程信息缓存至redis,课程id:{}",courseId);
+    public void saveCourseCache(MqMessage mqMessage, long courseId) {
+        log.debug("将课程信息缓存至redis,课程id:{}", courseId);
         try {
             TimeUnit.SECONDS.sleep(2);
         } catch (InterruptedException e) {
@@ -95,12 +96,22 @@ public class CoursePublishTask extends MessageProcessAbstract {
     }
 
     //保存课程索引信息
-    public void saveCourseIndex(MqMessage mqMessage,long courseId){
-        log.debug("保存课程索引信息,课程id:{}",courseId);
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    public void saveCourseIndex(MqMessage mqMessage, long courseId) {
+        log.debug("正在保存课程信息索引，课程id:{}", courseId);
+        // 1. 获取消息id
+        Long id = mqMessage.getId();
+        // 2. 获取小任务阶段状态
+        MqMessageService mqMessageService = this.getMqMessageService();
+        int stageTwo = mqMessageService.getStageTwo(id);
+        // 3. 当前小任务完成，无需再次处理
+        if (stageTwo == 1) {
+            log.debug("当前阶段为创建课程索引任务，已完成，无需再次处理，任务信息：{}", mqMessage);
+            return;
+        }
+        // 4. 远程调用保存课程索引接口，将课程信息上传至ElasticSearch
+        Boolean result = coursePublishService.saveCourseIndex(courseId);
+        if (result) {
+            mqMessageService.completedStageTwo(id);
         }
     }
 }

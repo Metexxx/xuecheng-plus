@@ -5,6 +5,7 @@ import com.xuecheng.base.exception.CommonError;
 import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.content.config.MultipartSupportConfig;
 import com.xuecheng.content.feignclient.MediaServiceClient;
+import com.xuecheng.content.feignclient.SearchServiceClient;
 import com.xuecheng.content.mapper.CourseBaseMapper;
 import com.xuecheng.content.mapper.CourseMarketMapper;
 import com.xuecheng.content.mapper.CoursePublishMapper;
@@ -12,10 +13,7 @@ import com.xuecheng.content.mapper.CoursePublishPreMapper;
 import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.CoursePreviewDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
-import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.model.po.CourseMarket;
-import com.xuecheng.content.model.po.CoursePublish;
-import com.xuecheng.content.model.po.CoursePublishPre;
+import com.xuecheng.content.model.po.*;
 import com.xuecheng.content.service.CourseBaseInfoService;
 import com.xuecheng.content.service.CoursePublishService;
 import com.xuecheng.content.service.TeachplanService;
@@ -28,12 +26,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -65,10 +63,14 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     CoursePublishMapper coursePublishMapper;
 
     @Autowired
+    MediaServiceClient mediaServiceClient;
+
+    @Resource
+    SearchServiceClient searchServiceClient;
+
+    @Resource
     MqMessageService mqMessageService;
 
-    @Autowired
-    MediaServiceClient mediaServiceClient;
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
@@ -245,5 +247,20 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         if (course == null) {
             XueChengPlusException.cast("远程调用媒资服务上传文件失败");
         }
+    }
+
+    @Override
+    public Boolean saveCourseIndex(Long courseId) {
+        // 1. 取出课程发布信息
+        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+        // 2. 拷贝至课程索引对象
+        CourseIndex courseIndex = new CourseIndex();
+        BeanUtils.copyProperties(coursePublish, courseIndex);
+        // 3. 远程调用搜索服务API，添加课程索引信息
+        Boolean result = searchServiceClient.add(courseIndex);
+        if (!result) {
+            XueChengPlusException.cast("添加索引失败");
+        }
+        return true;
     }
 }
