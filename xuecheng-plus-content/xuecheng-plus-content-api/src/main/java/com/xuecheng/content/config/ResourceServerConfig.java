@@ -34,12 +34,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.csrf().disable()           // 禁用 CSRF 保护
                 .authorizeRequests()
                 .antMatchers("/r/**","/course/**")
-                .authenticated()    //所有/r/**的请求必须认证通过
+                .authenticated()    // 指定 "/r/" 和 "/course/" 这两个路径需要进行身份认证才能访问。
                 .anyRequest()
-                .permitAll();
+                .permitAll();       // 允许所有其他请求（除了上面指定的路径之外）都可以被访问，不需要进行身份认证
     }
 
 }

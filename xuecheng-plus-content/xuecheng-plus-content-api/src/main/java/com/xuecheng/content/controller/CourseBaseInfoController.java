@@ -11,7 +11,9 @@ import com.xuecheng.content.service.CourseBaseInfoService;
 import com.xuecheng.content.util.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,7 @@ public class CourseBaseInfoController {
     private CourseBaseInfoService courseBaseInfoService;
 
     @ApiOperation("课程查询接口")
+    @PreAuthorize("hasAnyAuthority('xc_teachmanager_course_list')")   // 拥有课程列表查询的权限才可访问
     @PostMapping("/course/list")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody(required = false) QueryCourseParamsDto queryCourseParams) {
 //        CourseBase courseBase = new CourseBase();
@@ -42,7 +45,13 @@ public class CourseBaseInfoController {
 //        List<CourseBase> courseBaseList = new ArrayList<>();
 //        courseBaseList.add(courseBase);
 //        return new PageResult<>(courseBaseList, 10, 1, 10);
-        return courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParams);
+        SecurityUtil.XcUser user = SecurityUtil.getUser();
+        Long companyId = null;
+        assert user != null;
+        if (StringUtils.isNotEmpty(user.getCompanyId())) {
+            companyId = Long.parseLong(user.getCompanyId());
+        }
+        return courseBaseInfoService.queryCourseBaseList(companyId, pageParams, queryCourseParams);
     }
 
     @ApiOperation("新增课程基础信息")
