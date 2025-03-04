@@ -1,4 +1,4 @@
-package com.xuecheng.content.controller.config;
+package com.xuecheng.content.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
