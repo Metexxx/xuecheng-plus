@@ -1,7 +1,7 @@
 package com.xuecheng.auth.controller;
 
 import com.xuecheng.ucenter.model.po.XcUser;
-import com.xuecheng.ucenter.service.impl.WxAuthServiceImpl;
+import com.xuecheng.ucenter.service.WxAuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +14,7 @@ import java.io.IOException;
 public class WxLoginController {
 
     @Autowired
-    WxAuthServiceImpl wxAuthService;
+    WxAuthService wxAuthService;
 
     @RequestMapping("/wxLogin")
     public String wxLogin(String code, String state) throws IOException {
