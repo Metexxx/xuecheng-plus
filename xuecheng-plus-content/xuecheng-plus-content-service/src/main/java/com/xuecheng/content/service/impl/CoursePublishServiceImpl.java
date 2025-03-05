@@ -78,7 +78,7 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         CourseBaseInfoDto courseBaseInfo = courseBaseInfoService.getCourseBaseInfo(courseId);
 
         //课程计划信息
-        List<TeachplanDto> teachplanTree= teachplanService.findTeachplanTree(courseId);
+        List<TeachplanDto> teachplanTree = teachplanService.findTeachplanTree(courseId);
 
         CoursePreviewDto coursePreviewDto = new CoursePreviewDto();
         coursePreviewDto.setCourseBase(courseBaseInfo);
@@ -145,18 +145,18 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         //约束校验
         //查询课程预发布表
         CoursePublishPre coursePublishPre = coursePublishPreMapper.selectById(courseId);
-        if(coursePublishPre == null){
+        if (coursePublishPre == null) {
             XueChengPlusException.cast("请先提交课程审核，审核通过才可以发布");
         }
         //本机构只允许提交本机构的课程
-        if(!coursePublishPre.getCompanyId().equals(companyId)){
+        if (!coursePublishPre.getCompanyId().equals(companyId)) {
             XueChengPlusException.cast("不允许提交其它机构的课程。");
         }
 
         //课程审核状态
         String auditStatus = coursePublishPre.getStatus();
         //审核通过方可发布
-        if(!"202004".equals(auditStatus)){
+        if (!"202004".equals(auditStatus)) {
             XueChengPlusException.cast("操作失败，课程审核通过方可发布。");
         }
 
@@ -171,14 +171,14 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     }
 
     /**
+     * @param courseId 课程id
      * @description 保存课程发布信息
-     * @param courseId  课程id
      */
-    private void saveCoursePublish(Long courseId){
+    private void saveCoursePublish(Long courseId) {
         //整合课程发布信息
         //查询课程预发布表
         CoursePublishPre coursePublishPre = coursePublishPreMapper.selectById(courseId);
-        if(coursePublishPre == null){
+        if (coursePublishPre == null) {
             XueChengPlusException.cast("课程预发布数据为空");
         }
 
@@ -188,9 +188,9 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         BeanUtils.copyProperties(coursePublishPre, coursePublish);
         coursePublish.setStatus("203002");
         CoursePublish coursePublishUpdate = coursePublishMapper.selectById(courseId);
-        if(coursePublishUpdate == null){
+        if (coursePublishUpdate == null) {
             coursePublishMapper.insert(coursePublish);
-        }else{
+        } else {
             coursePublishMapper.updateById(coursePublish);
         }
         //更新课程基本表的发布状态
@@ -199,13 +199,15 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         courseBaseMapper.updateById(courseBase);
     }
 
-    /** todo
+    /**
+     * todo
+     *
+     * @param courseId 课程id
      * @description 保存消息表记录，稍后实现
-     * @param courseId  课程id
      */
-    private void saveCoursePublishMessage(Long courseId){
+    private void saveCoursePublishMessage(Long courseId) {
         MqMessage mqMessage = mqMessageService.addMessage("course_publish", String.valueOf(courseId), null, null);
-        if(mqMessage==null){
+        if (mqMessage == null) {
             XueChengPlusException.cast(CommonError.UNKOWN_ERROR);
         }
     }
@@ -262,5 +264,10 @@ public class CoursePublishServiceImpl implements CoursePublishService {
             XueChengPlusException.cast("添加索引失败");
         }
         return true;
+    }
+
+    @Override
+    public CoursePublish getCoursePublishCache(Long courseId) {
+        return coursePublishMapper.selectById(courseId);
     }
 }

@@ -1,7 +1,9 @@
 package com.xuecheng.content.controller;
 
 import com.xuecheng.content.model.dto.CoursePreviewDto;
+import com.xuecheng.content.model.po.CoursePublish;
 import com.xuecheng.content.service.CoursePublishService;
+import com.xuecheng.content.util.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
@@ -31,15 +33,13 @@ public class CoursePublishController {
      */
     @PostMapping("/courseaudit/commit/{courseId}")
     public void commitAudit(@PathVariable Long courseId) {
-        Long companyId = 1232141425L;
-        coursePublishService.commitAudit(companyId,courseId);
-
-//        SecurityUtil.XcUser user = SecurityUtil.getUser();
-//        Long companyId = null;
-//        if (StringUtils.isNotEmpty(user.getCompanyId())) {
-//            companyId = Long.parseLong(user.getCompanyId());
-//        }
-//        coursePublishService.commitAudit(companyId, courseId);
+        SecurityUtil.XcUser user = SecurityUtil.getUser();
+        Long companyId = null;
+        assert user != null;
+        if (StringUtils.isNotEmpty(user.getCompanyId())) {
+            companyId = Long.parseLong(user.getCompanyId());
+        }
+        coursePublishService.commitAudit(companyId, courseId);
     }
     @ApiOperation("课程发布")
     @ResponseBody
@@ -47,5 +47,11 @@ public class CoursePublishController {
     public void coursepublish(@PathVariable("courseId") Long courseId){
         Long companyId = 1232141425L;
         coursePublishService.publish(companyId,courseId);
+    }
+
+    @ApiOperation("查询课程发布信息")
+    @GetMapping("/r/coursepublish/{courseId}")
+    public CoursePublish getCoursePublish(@PathVariable("courseId") Long courseId) {
+        return coursePublishService.getCoursePublishCache(courseId);
     }
 }

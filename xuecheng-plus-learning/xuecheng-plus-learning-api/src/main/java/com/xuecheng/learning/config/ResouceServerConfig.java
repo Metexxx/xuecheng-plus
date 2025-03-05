@@ -1,4 +1,4 @@
-package com.xuecheng.content.config;
+package com.xuecheng.learning.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +15,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  **/
 @Configuration
 @EnableResourceServer
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
+public class ResouceServerConfig extends ResourceServerConfigurerAdapter {
 
 
     //资源服务标识
@@ -34,12 +34,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()           // 禁用 CSRF 保护
+        http.csrf().disable()
                 .authorizeRequests()
-//                .antMatchers("/r/**","/course/**")
-//                .authenticated()    // 指定 "/r/" 和 "/course/" 这两个路径需要进行身份认证才能访问。
-                .anyRequest()
-                .permitAll();       // 允许所有其他请求（除了上面指定的路径之外）都可以被访问，不需要进行身份认证
+//                .antMatchers("/r/**","/course/**").authenticated()//所有/r/**的请求必须认证通过
+                .anyRequest().permitAll()
+        ;
     }
+
 
 }

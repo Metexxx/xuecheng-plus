@@ -3,4 +3,4 @@ POST {{checkcode_host}}/checkcode/pic
 
 
 ### 校验验证码
-POST {{checkcode_host}}/checkcode/verify?key=checkcodea990f9abab3c4c3798834bb55bf7aa80&code=70dl
+POST {{checkcode_host}}/checkcode/verify?key=checkcode:e2e6001585bd4a3f874ef0690db1edc9&code=70dl
