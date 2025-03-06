@@ -24,4 +24,5 @@ public interface MyCourseTablesService {
 
     PageResult<XcCourseTables> myCourseTables(MyCourseTableParams params);
 
+    boolean saveChooseCourseStatus(String chooseCourseId);
 }

@@ -10,14 +10,7 @@
     <artifactId>xuecheng-plus-orders-service</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>com.xuecheng</groupId>
             <artifactId>xuecheng-plus-message-sdk</artifactId>
@@ -28,6 +21,16 @@
             <artifactId>xuecheng-plus-orders-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
         <!-- MySQL 驱动 -->
         <dependency>
             <groupId>mysql</groupId>
@@ -64,15 +67,18 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
+        <!-- 消息通知依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
+        <!-- Spring Boot 集成 freemarker -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
+
         <!-- Spring Cloud 微服务远程调用 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

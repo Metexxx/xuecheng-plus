@@ -78,7 +78,7 @@ public class QRCodeUtil {
         QRCodeUtil qrCodeUtil = new QRCodeUtil();
 //        System.out.println(qrCodeUtil.createQRCode("http://www.itcast.cn/", 200, 200));
 
-        System.out.println(qrCodeUtil.createQRCode("http://192.168.43.1:63030/orders/alipaytest", 200, 200));
+        System.out.println(qrCodeUtil.createQRCode("http://192.168.43.80:63030/orders/alipaytest", 200, 200));
 
     }
 

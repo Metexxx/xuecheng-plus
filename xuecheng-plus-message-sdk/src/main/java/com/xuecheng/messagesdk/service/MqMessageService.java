@@ -54,7 +54,7 @@ public interface MqMessageService extends IService<MqMessage> {
 
     /**
      * @description 查询阶段状态
-     * @param id
+     * @param id 消息id
      * @return int
      * @author Mr.M
      * @date 2022/9/21 20:54
