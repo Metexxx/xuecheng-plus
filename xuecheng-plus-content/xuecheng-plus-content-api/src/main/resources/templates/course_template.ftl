@@ -58,9 +58,9 @@
         </div>
         <div class="banner-rit">
             <p>
-                <a href="http://www.localhost/course/preview/learning.html?id=${model.courseBase.id}" target="_blank">
+                <a href="http://www.51xuecheng.cn/course/preview/learning.html?id=${model.courseBase.id}" target="_blank">
                     <#if model.courseBase.pic??>
-                        <img src="http://file.localhost${model.courseBase.pic}" alt="" width="270" height="156">
+                        <img src="http://file.51xuecheng.cn${model.courseBase.pic}" alt="" width="270" height="156">
                     <#else>
                         <img src="/static/img/widget-video.png" alt="" width="270" height="156">
                     </#if>
@@ -179,19 +179,9 @@
                                 <div class="title act"><i class="i-chevron-top"></i>${firstNode.pname}<span class="time">x小时</span></div>
                                 <div class="drop-down" style="height: 260px;">
                                     <ul class="list-box">
-<#--                                        <#list firstNode.teachPlanTreeNodes as secondNode>-->
-<#--                                            <li><a href="http://www.localhost/course/preview/learning.html?id=${model.courseBase.id}&chapter=${secondNode.teachplanMedia.teachplanId!''}" target="_blank">${secondNode.pname}</a></li>-->
-<#--                                        </#list>-->
-
                                         <#list firstNode.teachPlanTreeNodes as secondNode>
-                                            <li>
-                                                <a href="http://www.localhost/course/preview/learning.html?id=${model.courseBase.id}&chapter=${(secondNode.teachplanMedia.teachplanId)!''}"
-                                                   target="_blank">
-                                                    ${secondNode.pname}
-                                                </a>
-                                            </li>
+                                            <li><a href="http://www.51xuecheng.cn/course/preview/learning.html?id=${model.courseBase.id}&chapter=${secondNode.teachplanMedia.teachplanId!''}" target="_blank">${secondNode.pname}</a></li>
                                         </#list>
-
                                     </ul>
                                 </div>
                             </div>

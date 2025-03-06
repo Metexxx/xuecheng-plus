@@ -1,4 +1,4 @@
-package com.xuecheng.content.controller.config;
+package com.xuecheng.orders.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +15,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  **/
 @Configuration
 @EnableResourceServer
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
+public class ResouceServerConfig extends ResourceServerConfigurerAdapter {
 
 
     //资源服务标识
@@ -36,10 +36,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/r/**","/course/**")
-                .authenticated()    //所有/r/**的请求必须认证通过
-                .anyRequest()
-                .permitAll();
+//                .antMatchers("/r/**","/course/**").authenticated()//所有/r/**的请求必须认证通过
+                .anyRequest().permitAll()
+        ;
     }
+
 
 }

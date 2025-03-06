@@ -11,6 +11,16 @@
     <artifactId>xuecheng-plus-auth</artifactId>
 
     <dependencies>
+        <!--redis依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!--common-pool-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
 
         <!-- security&认证中心 -->
         <dependency>

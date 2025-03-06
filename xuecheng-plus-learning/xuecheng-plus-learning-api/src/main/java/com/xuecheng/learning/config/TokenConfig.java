@@ -1,4 +1,4 @@
-package com.xuecheng.content.controller.config;
+package com.xuecheng.learning.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 /**
- * @author Swith4Sumin
+ * @author Administrator
  * @version 1.0
  **/
 @Configuration

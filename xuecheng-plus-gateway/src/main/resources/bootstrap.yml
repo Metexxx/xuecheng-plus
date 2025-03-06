@@ -18,3 +18,8 @@ spring:
             refresh: true
   profiles:
     active: dev
+
+
+logging:
+  level:
+    com.xuecheng: debug
